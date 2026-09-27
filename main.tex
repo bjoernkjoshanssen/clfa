@@ -1,0 +1,447 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{tikz}
+\usepackage{booktabs,longtable,array}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{problem}[theorem]{Problem}
+
+\newcommand{\Con}{\operatorname{Con}}
+\newcommand{\Eq}{\operatorname{Eq}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\LL}{\mathbf{L}_7}
+\newcommand{\Lcon}{\mathcal L_{\mathrm{con}}}
+\newcommand{\lat}[1]{\##1}
+
+\title{Complemented elements and the congruence lattices\\of finite algebras with eight elements}
+\author{Bj{\o}rn Kjos-Hanssen}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Every lattice with at most seven elements is isomorphic to the congruence lattice of a finite
+algebra: DeMeo (2012) settled all but one of them, and the last one, the seven-element lattice
+$\LL$, was shown this August by Chenxiao Tian to be the interval $[S_3,\mathrm{PSL}(2,64)]$.
+We examine the $222$ lattices with eight elements. We show that $179$ of them are representable:
+$113$ by the classical closure properties (distributive lattices, adjoined ordinal sums, parallel
+sums, and Snow's theorem on lattices of width two) and $66$ by an explicit representation found by
+computer---a closed sublattice of a partition lattice $\Eq(n)$ with $n\le 8$, or an interval
+$[H,G]$ in the subgroup lattice of a finite group. The groups needed include $M_{11}$, $M_{22}$,
+$M_{12}{:}2$, $J_2$, $L_3(7)$, $O_8^\pm(2)$, $A_{11}$ and $S_{11}$. In particular every
+semimodular, every modular and every semidistributive lattice with at most eight elements is
+representable. The remaining $43$ lattices, $25$ up to duality, survive every search we ran (closure
+in $\Eq(n)$ for $n\le 8$, all core-free intervals in groups of order at most $255$, all transitive
+groups of degree at most $47$, the GAP library of tables of marks) and are proposed as the smallest
+lattices not known to be representable. Their common feature is a complemented element of a
+specific kind: $21$ of them contain an element comparable only with $0$ and $1$---the feature that
+made $\LL$ hard---and most of the others contain a stretched pentagon. Along the way we record that
+$\LL\cong[7{:}6,\mathrm{Sp}(6,2)]$ has a representation on $34\,560$ elements and none on fewer
+than $48$, and that the eight-element lattice $\lat{61}$ of Figure~\ref{fig:two} is
+$[D_{20},J_2]$ and has no representation on at most eight elements.
+\end{abstract}
+
+\section{Introduction}
+
+A finite lattice $L$ is \emph{representable} if $L\cong\Con\mathbf A$ for some finite algebra
+$\mathbf A$; whether every finite lattice is representable is the finite lattice representation
+problem. By P\'alfy and Pudl\'ak \cite{PP} this is equivalent to asking whether every finite
+lattice is an interval $[H,G]$ in the subgroup lattice of a finite group, and for a transitive
+$G$-set $G/H$ one has $\Con(G/H)\cong[H,G]$, the congruences being the block systems.
+
+DeMeo \cite[Ch.~6]{DeMeo2012} showed that every lattice with at most seven elements is
+representable except possibly one seven-element lattice, $\LL$ (the lattice $\mathbf L_{10}$ of the
+DeMeo--Freese--Jipsen catalogue \cite{DeMeoFreese}). Tian \cite{Tian2026} showed in August 2026
+that $\LL\cong[S_3,\mathrm{PSL}(2,64)]$; the same interval, and a smaller one in $\mathrm{Sp}(6,2)$,
+were found independently by the searches described here (Section~\ref{sec:L7}). So eight is the
+first size at which the representation problem is open, and this note is a first systematic
+attack on it. There are $222$ lattices with eight elements ($53$ with seven, $15$ with six).
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[scale=1.0, every node/.style={circle,fill,inner sep=1.6pt}]
+\begin{scope}
+  \node (0) at (0,0) [label=below:$0$] {};
+  \node (K) at (-2,1.5) [label=left:$K$] {};
+  \node (J1) at (0,1) [label=right:$J_1$] {};
+  \node (J2) at (1.6,1) [label=right:$J_2$] {};
+  \node (M1) at (0.8,2) [label=left:$M_1$] {};
+  \node (M2) at (2.4,2) [label=right:$M_2$] {};
+  \node (1) at (0,3) [label=above:$1$] {};
+  \draw (0)--(K)--(1); \draw (0)--(J1)--(M1)--(1); \draw (0)--(J2)--(M1); \draw (J2)--(M2)--(1);
+  \node[fill=none,inner sep=0pt] at (0.3,-0.9) {$\LL=[S_3,\mathrm{PSL}(2,64)]=[7{:}6,\mathrm{Sp}(6,2)]$};
+\end{scope}
+\begin{scope}[xshift=8cm]
+  \node (0) at (0,0) [label=below:$0$] {};
+  \node (a) at (-1.5,1) [label=left:$a$] {};
+  \node (b) at (0,1) [label=right:$b$] {};
+  \node (c) at (1.5,1) [label=right:$c$] {};
+  \node (d) at (1.5,2) [label=right:$d$] {};
+  \node (e) at (0,2) [label=right:$e$] {};
+  \node (f) at (-1.5,2) [label=left:$f$] {};
+  \node (1) at (0,3) [label=above:$1$] {};
+  \draw (0)--(a)--(e)--(1); \draw (a)--(f)--(1); \draw (0)--(b)--(d)--(1); \draw (b)--(e); \draw (0)--(c)--(d);
+  \node[fill=none,inner sep=0pt] at (0,-0.9) {$\lat{61}=[D_{20},J_2]$};
+\end{scope}
+\end{tikzpicture}
+\caption{The two lattices with at most eight elements for which the only known representations
+come from simple groups of Lie type or sporadic groups. In $\lat{61}$ (self-dual, with
+$a<e,f$; $b<d,e$; $c<d$) the interval $[D_{20},J_2]$ has $a=D_{10}\times D_{10}$, $b=2\times A_5$,
+$c=2^{1+4}_-{:}D_{10}$, $d=2^{1+4}_-{:}A_5$, $e=D_{10}\times A_5$, $f=5^2{:}D_{12}$.}
+\label{fig:two}
+\end{figure}
+
+\subsection*{Results}
+Our numbering $\lat1,\dots,\lat{222}$ refers to the file \texttt{lat8.txt} accompanying this note,
+whose $i$-th line lists the covering relations of lattice $\lat i$ on the elements $0,\dots,7$ with
+$0$ the bottom and $7$ the top.
+
+\begin{theorem}\label{thm:census}
+Of the $222$ lattices with eight elements, at least $179$ are congruence lattices of finite
+algebras: $113$ by the closure properties of Section~\ref{sec:formal} and $66$ by the explicit
+representations of Table~\ref{tab:wit}. The remaining $43$ lattices, which form $25$ lattices up to
+duality, are drawn in Figure~\ref{fig:open}; no representation of any of them is known.
+\end{theorem}
+
+\begin{theorem}\label{thm:classes}
+Every upper semimodular, every lower semimodular, every modular and every semidistributive lattice
+with at most eight elements is representable ($38$, $38$, $34$ and $60$ lattices with eight
+elements respectively). Of the $60$ graded lattices with eight elements, $54$ are representable
+and six ($\lat{15}$, $\lat{21}$, $\lat{34}$, $\lat{51}$, $\lat{88}$, $\lat{110}$) are open.
+\end{theorem}
+
+\begin{theorem}\label{thm:two}
+\begin{enumerate}
+\item $\LL\cong[H,G]$ for $(G,H)=(\mathrm{Sp}(6,2),7{:}6)$, $(\mathrm{PSL}(2,64),S_3)$,
+$(\mathrm{McL},3{:}(5{:}8))$ and $(\mathrm{Co}_3,\mathrm{SL}(2,5){:}D_{12})$, of indices
+$34\,560$, $43\,680$, $7\,484\,400$ and $344\,282\,400$. $\LL$ is not the congruence lattice of
+any algebra with fewer than $48$ elements.
+\item The lattice $\lat{61}$ of Figure~\ref{fig:two} is the interval $[D_{20},J_2]$ of index
+$30\,240$ in the Hall--Janko group (and also an interval in $J_2{:}2$ and in $U_5(2)$). It is not
+the congruence lattice of any algebra with at most eight elements, not an interval above a
+core-free subgroup in any group of order at most $255$, and not the block lattice of any transitive
+group of degree at most $47$.
+\end{enumerate}
+\end{theorem}
+
+The $43$ open lattices are not a random sample. Twenty-one of them contain an element $K$ that is
+comparable only with $0$ and $1$ (twelve of the $25$ in Figure~\ref{fig:open}): removing $K$ leaves a
+seven-element lattice $L'$, so these are the lattices $L'\cup\{K\}$, ``$L'$ with a new complement
+of everything'', which is precisely the shape of $\LL$ (with $L'$ the six-element lattice
+$\{0,J_1,J_2,M_1,M_2,1\}$) and of $M_{n+1}=M_n\cup\{K\}$. This is the one operation under which
+$\Lcon$ is not known to be closed, and Theorem~\ref{thm:census} suggests why: of the $53$
+eight-element lattices with such an element, $27$ have a representation, $21$ are open, and the
+representations found for the $27$ are typically intervals in almost simple groups
+($M_{11}$, $M_{22}$, $M_{12}{:}2$, $L_2(32){:}5$, $L_3(7)$, $O_8^\pm(2)$, $S_{11}$, $A_{11}$, \dots).
+Most of the remaining open lattices contain a stretched pentagon---a chain with a bypass---glued to
+another one. Finally, all $43$ fail to be semimodular, modular or semidistributive, and $33$ of them are
+complemented; whereas the $71$ complemented lattices with eight elements split into $38$ representable
+and $33$ open, the picture that emerges is that complemented elements, and above all elements
+complementing everything, are where the difficulty lives.
+
+\begin{problem}
+Represent the lattices of Figure~\ref{fig:open}. The three we find most inviting are
+$\lat{9}$ (two two-element chains and two points under a common top and bottom, the
+smallest open ``$M_n$-like'' lattice), $\lat{14}$ ($L'\cup\{K\}$ for the seven-element lattice $L'$ with $0\prec a$, $a\prec b,c,d$, $b\prec b'$ and $b',c,d\prec 1$) and $\lat{101}$ (a chain $0<a<b<c<d<1$ with $0\prec x\prec d$ and
+$a\prec y\prec 1$, one of the ten open lattices that are not complemented).
+\end{problem}
+
+\begin{figure}[p]
+\centering
+\input{fig_open}
+\caption{The $25$ eight-element lattices (up to duality) for which no representation is known.
+Twelve of them ($\lat4$, $\lat9$, $\lat{13}$, $\lat{14}$, $\lat{20}$, $\lat{24}$, $\lat{32}$, $\lat{33}$, $\lat{42}$, $\lat{43}$, $\lat{64}$, $\lat{74}$) contain an element comparable only with $0$ and $1$, drawn to the side.
+Covering relations are listed in \texttt{lat8.txt}; for example
+$\lat{9}$: $0{<}1,0{<}2,0{<}5,0{<}6,1{<}4,2{<}3,3{<}7,4{<}7,5{<}7,6{<}7$;
+$\lat{14}$: $0{<}1,0{<}6,1{<}2,1{<}4,1{<}5,2{<}3,3{<}7,4{<}7,5{<}7,6{<}7$;
+$\lat{101}$: $0{<}1,0{<}4,1{<}2,1{<}6,2{<}3,3{<}5,4{<}5,5{<}7,6{<}7$.}
+\label{fig:open}
+\end{figure}
+
+\section{Closure properties}\label{sec:formal}
+
+The class $\Lcon$ of representable lattices contains every finite distributive lattice, and is
+closed under duals (Kurzweil, Netter), under the \emph{adjoined ordinal sum} (identify the top of
+$L_1$ with the bottom of $L_2$) and the ordinal sum (McKenzie, Snow), and under the \emph{parallel
+sum} of two lattices, obtained by placing $L_1$ and $L_2$ side by side and adjoining a new bottom
+and a new top (Snow); see \cite[\S 3]{DeMeoFreese} for references and proofs. Snow \cite{Snow2000}
+also proved that every finite lattice with no three-element antichain is representable.
+Since every lattice with at most seven elements is representable, an eight-element lattice is
+representable as soon as it is distributive ($15$ lattices), has an element other than $0,1$
+comparable with every element, i.e.\ is an adjoined ordinal sum ($96$), is the parallel sum of two
+lattices with at least two elements each ($3$), or has width at most two ($51$). These four
+conditions cover $113$ of the $222$ lattices (\texttt{reduce3.py}).
+
+We stress what is \emph{not} covered: identifying the tops and the bottoms of two lattices
+(``$0$-$1$ gluing''). With a three-element chain as second summand this is the operation
+$L'\mapsto L'\cup\{K\}$ described above, and it is exactly what separates $\LL$ from the
+representable six-element lattice $L'$ and $M_{16}$ from $M_{15}$. (A parallel sum with a
+one-element second summand is $L'$ with new top and bottom and a new complement, which is a
+different lattice; we do not use that case either.)
+
+\section{Explicit representations}\label{sec:wit}
+
+\subsection{The closure test in $\Eq(n)$}
+Let $\Eq(A)$ be the lattice of equivalence relations on a finite set $A$ and, for $S\subseteq\Eq(A)$,
+let $\End(S)$ be the monoid of self-maps of $A$ preserving every member of $S$. Since an equivalence
+relation is a congruence of $\mathbf A$ iff it is preserved by the unary polynomials of $\mathbf A$,
+a lattice $L$ is the congruence lattice of an algebra on $A$ iff $L\cong\Con(A,M)$ for a
+transformation monoid $M$, and a $\{0,1\}$-sublattice $S\le\Eq(A)$ with $S\cong L$ is of this form
+iff for all $a\ne b$ the equivalence relation generated by $\{(f(a),f(b)):f\in\End(S)\}$ lies in
+$S$ (then $S=\Con(A,\End(S))$). The program \texttt{latrep.c} enumerates, for a lattice given by its
+covering relations and an $n\le 8$, all such $S\le\Eq(n)$ by backtracking and applies this test.
+Every witness it reported was re-checked by a separate brute-force program over all $n^n$ maps
+(\texttt{verify\_eq.py} for $n\le 7$, \texttt{bfverify.c} for $n=8$).
+
+\subsection{Intervals in subgroup lattices}
+Every interval $[H,G]$ in a subgroup lattice is representable, being $\Con(G/H)$, and an
+eight-element interval is identified as one of the $222$ lattices by a canonical form of its
+order relation. Four sources were used. (a) Every group $G$ of order at most $255$ in the GAP small
+groups library and every conjugacy class of core-free subgroups $H<G$ (\texttt{smallgrp.g}; orders
+$128$, $192$ and $256$ are the largest and were run by B.~Kjos-Hanssen). (b) Every transitive
+permutation group of degree $d\le 47$ in the TransGrp library \cite{TransGrp}, $3\,302\,365$ groups,
+via its lattice of block systems $[G_1,G]$ (\texttt{lat8trans.g}; degrees $32$ and $40$--$47$ run by
+B.~Kjos-Hanssen). (c) The $414$ tables of marks of the TomLib library \cite{TomLib}: if $M$ is the
+table of marks of $G$, the number of overgroups of $H=K_j$ in the class of $K_i$ is $M_{ij}/M_{ii}$,
+and when the six overgroups lie in six different classes their order relation is $X_a\le X_b$ iff
+$M_{ba}>0$; the $1148$ cases with a repeated class were computed directly from the group stored with
+the table (\texttt{tom8.g}, \texttt{tom8\_verify.g}; the cases in $\mathrm{He}{:}2$ exceeded the
+time limit). (d) All core-free intervals in $\mathrm{PSL}(2,q)$ and $\mathrm{PGL}(2,q)$ for $q\le 37$
+(\texttt{l2q.g}). Every group-theoretic witness in Table~\ref{tab:wit} was afterwards recomputed
+in a fresh GAP session directly from the group (\texttt{verify\_groups4.g}), and the two intervals of
+Figure~\ref{fig:two} are given by explicit permutations in \texttt{L61\_in\_J2.g},
+\texttt{L7\_in\_Sp6\_2.g}, \texttt{L7\_in\_L2\_64.g}, \texttt{L7\_in\_Co3.g}.
+
+\subsection{The table}
+Table~\ref{tab:wit} lists the $109$ lattices not covered by Section~\ref{sec:formal} with one
+representation each, or the word \textbf{open}. Eleven representations are ``dual of $\lat j$'',
+meaning that $\lat j$ has an explicit witness and the lattice is representable by the theorem of
+Kurzweil and Netter (which is constructive but produces large algebras); $24$ are in $\Eq(n)$
+($n\le 8$), $23$ are intervals from tables of marks, $8$ are intervals in small groups, transitive
+groups or $\mathrm{P(S/G)L}(2,11)$.
+
+{\small
+\begin{longtable}{@{}l l p{4.9cm} p{7.4cm}@{}}
+\caption{Eight-element lattices not covered by the closure properties, with one representation
+each. Partitions are written by their blocks ($01|23|4$ is $\{0,1\},\{2,3\},\{4\}$); $\theta_e$ is
+the image of the lattice element $e=1,\dots,6$, with $\theta_0$ the equality and $\theta_7$ the full
+relation. $[H,G]$ is the interval in the subgroup lattice; $G_1$ is a point stabiliser.}
+\label{tab:wit}\\
+\toprule
+lattice & dual & covering relations & representation\\
+\midrule
+\endfirsthead
+\toprule
+lattice & dual & covering relations & representation\\
+\midrule
+\endhead
+\#1 & \#1 & \texttt{0<1 0<2 0<3 0<4 0<5 0<6 1<7 2<7 3<7 4<7 5<7 6<7} & $[H,G]$, $G=\mathrm{SmallGroup}(10,1)$, $H\cong ?$\\
+\#2 & \#2 & \texttt{0<1 0<3 0<4 0<5 0<6 1<2 2<7 3<7 4<7 5<7 6<7} & $[H,G]$, $G=\mathrm{SmallGroup}(60,5)$, $H\cong ?$\\
+\#3 & \#7 & \texttt{0<1 0<4 0<5 0<6 1<2 1<3 2<7 3<7 4<7 5<7 6<7} & $[H,\mathrm{PSL}(2,11)]$, $H\cong 2^2$\\
+\#4 & \#27 & \texttt{0<1 0<5 0<6 1<2 1<3 1<4 2<7 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#5 & \#84 & \texttt{0<1 0<6 1<2 1<3 1<4 1<5 2<7 3<7 4<7 5<7 6<7} & dual of \#84\\
+\#7 & \#3 & \texttt{0<1 0<2 0<4 0<5 0<6 1<3 2<3 3<7 4<7 5<7 6<7} & $\Eq(6)$: $\theta_1=012|3|4|5$, $\theta_2=0|1|2|345$, $\theta_3=012|345$, $\theta_4=03|14|25$, $\theta_5=05|13|24$, $\theta_6=04|15|23$\\
+\#8 & \#8 & \texttt{0<1 0<4 0<5 0<6 1<2 2<3 3<7 4<7 5<7 6<7} & $[H,M_{11}]$, $H\cong D_{12}$, $|G:H|=660$\\
+\#9 & \#9 & \texttt{0<1 0<2 0<5 0<6 1<4 2<3 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#10 & \#10 & \texttt{0<1 0<2 0<5 0<6 1<3 1<4 2<3 3<7 4<7 5<7 6<7} & $[H,\mathrm{PGL}(2,11)]$, $H\cong 2^2$\\
+\#11 & \#28 & \texttt{0<1 0<5 0<6 1<2 1<4 2<3 3<7 4<7 5<7 6<7} & $[H,U_4(2){:}2]$, $H\cong 2\times S_{4}$, $|G:H|=1080$\\
+\#12 & \#30 & \texttt{0<1 0<2 0<6 1<4 1<5 2<3 3<7 4<7 5<7 6<7} & dual of \#30\\
+\#13 & \#31 & \texttt{0<1 0<2 0<6 1<3 1<4 1<5 2<3 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#14 & \#85 & \texttt{0<1 0<6 1<2 1<4 1<5 2<3 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#15 & \#88 & \texttt{0<1 0<2 1<4 1<5 1<6 2<3 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#16 & \#89 & \texttt{0<1 0<2 1<3 1<4 1<5 1<6 2<3 3<7 4<7 5<7 6<7} & $\Eq(7)$: $\theta_1=01|2|3|4|5|6$, $\theta_2=023|1|456$, $\theta_3=0123|456$, $\theta_4=014|25|36$, $\theta_5=016|24|35$, $\theta_6=015|26|34$\\
+\#18 & \#38 & \texttt{0<1 0<5 0<6 1<2 2<3 2<4 3<7 4<7 5<7 6<7} & $[H,A_5\times A_5]$, $H\cong S_{3}$, $|G:H|=600$\\
+\#19 & \#48 & \texttt{0<1 0<2 0<6 1<3 1<5 2<3 2<4 3<7 4<7 5<7 6<7} & $[H,M_{22}]$, $H\cong A_{5}$, $|G:H|=7392$\\
+\#20 & \#93 & \texttt{0<1 0<6 1<2 1<5 2<3 2<4 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#21 & \#110 & \texttt{0<1 0<2 1<5 1<6 2<3 2<4 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#22 & \#112 & \texttt{0<1 0<2 1<3 1<5 1<6 2<3 2<4 3<7 4<7 5<7 6<7} & $[H,A_9]$, $H\cong (S_{3}\times S_{3}){:}2$, $|G:H|=2520$\\
+\#24 & \#124 & \texttt{0<1 0<6 1<2 2<3 2<4 2<5 3<7 4<7 5<7 6<7} & \textbf{open}\\
+\#27 & \#4 & \texttt{0<1 0<2 0<3 0<5 0<6 1<4 2<4 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#28 & \#11 & \texttt{0<1 0<3 0<5 0<6 1<2 2<4 3<4 4<7 5<7 6<7} & dual of \#11\\
+\#29 & \#29 & \texttt{0<1 0<5 0<6 1<2 1<3 2<4 3<4 4<7 5<7 6<7} & $[H,M_{12}{:}2]$, $H\cong D_{20}$, $|G:H|=9504$\\
+\#30 & \#12 & \texttt{0<1 0<2 0<3 0<6 1<5 2<4 3<4 4<7 5<7 6<7} & $[H,L_2(32){:}5]$, $H\cong 10$, $|G:H|=16368$\\
+\#31 & \#13 & \texttt{0<1 0<2 0<3 0<6 1<4 1<5 2<4 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#32 & \#32 & \texttt{0<1 0<3 0<6 1<2 1<5 2<4 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#33 & \#86 & \texttt{0<1 0<6 1<2 1<3 1<5 2<4 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#34 & \#34 & \texttt{0<1 0<2 0<3 1<5 1<6 2<4 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#35 & \#35 & \texttt{0<1 0<2 0<3 1<4 1<5 1<6 2<4 3<4 4<7 5<7 6<7} & $\Eq(4)$: $\theta_1=01|2|3$, $\theta_2=02|1|3$, $\theta_3=0|12|3$, $\theta_4=012|3$, $\theta_5=013|2$, $\theta_6=01|23$\\
+\#36 & \#90 & \texttt{0<1 0<3 1<2 1<5 1<6 2<4 3<4 4<7 5<7 6<7} & $[H,A_{11}]$, $H\cong S_{5}$, $|G:H|=166320$\\
+\#38 & \#18 & \texttt{0<1 0<2 0<5 0<6 1<3 2<3 3<4 4<7 5<7 6<7} & dual of \#18\\
+\#39 & \#39 & \texttt{0<1 0<5 0<6 1<2 2<3 3<4 4<7 5<7 6<7} & $[H,U_4(3)]$, $H\cong (3^2){:}Q_8$, $|G:H|=45360$\\
+\#40 & \#40 & \texttt{0<1 0<2 0<6 1<5 2<3 3<4 4<7 5<7 6<7} & $[H,U_3(5)]$, $H\cong 5{:}4$, $|G:H|=6300$\\
+\#41 & \#49 & \texttt{0<1 0<2 0<6 1<4 1<5 2<3 3<4 4<7 5<7 6<7} & $[H,O_8^-(2)]$, $H\cong ((S_{3}\times S_{3}){:}2)\times S_{3}$, $|G:H|=456960$\\
+\#42 & \#57 & \texttt{0<1 0<2 0<6 1<3 1<5 2<3 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#43 & \#94 & \texttt{0<1 0<6 1<2 1<5 2<3 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#44 & \#111 & \texttt{0<1 0<2 1<5 1<6 2<3 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#45 & \#113 & \texttt{0<1 0<2 1<4 1<5 1<6 2<3 3<4 4<7 5<7 6<7} & $\Eq(5)$: $\theta_1=01|23|4$, $\theta_2=02|1|3|4$, $\theta_3=02|13|4$, $\theta_4=0123|4$, $\theta_5=014|23$, $\theta_6=01|234$\\
+\#46 & \#118 & \texttt{0<1 0<2 1<3 1<5 1<6 2<3 3<4 4<7 5<7 6<7} & $[G_1,G]$, $G=\mathrm{TransitiveGroup}(36,1124)$, $|G|=648$\\
+\#48 & \#19 & \texttt{0<1 0<2 0<3 0<6 1<4 1<5 2<5 3<4 4<7 5<7 6<7} & $[H,L_3(7)]$, $H\cong (6\times 2){:}2$, $|G:H|=78204$\\
+\#49 & \#41 & \texttt{0<1 0<3 0<6 1<2 1<4 2<5 3<4 4<7 5<7 6<7} & dual of \#41\\
+\#50 & \#95 & \texttt{0<1 0<6 1<2 1<3 2<5 3<4 4<7 5<7 6<7} & dual of \#95\\
+\#51 & \#51 & \texttt{0<1 0<2 0<3 1<6 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#52 & \#52 & \texttt{0<1 0<2 0<3 1<4 1<6 2<5 3<4 4<7 5<7 6<7} & $[H,O_8^+(2)]$, $H\cong S_{5}\times S_{3}$, $|G:H|=241920$\\
+\#53 & \#98 & \texttt{0<1 0<2 1<3 1<6 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#54 & \#59 & \texttt{0<1 0<2 0<3 1<4 1<5 1<6 2<5 3<4 4<7 5<7 6<7} & $\Eq(7)$: $\theta_1=01|2|3|4|5|6$, $\theta_2=02|13|45|6$, $\theta_3=0|1|246|35$, $\theta_4=01|246|35$, $\theta_5=0123|45|6$, $\theta_6=0156|2|3|4$\\
+\#55 & \#99 & \texttt{0<1 0<3 1<2 1<4 1<6 2<5 3<4 4<7 5<7 6<7} & $[G_1,G]$, $G=\mathrm{TransitiveGroup}(24,332)$, $|G|=192$\\
+\#57 & \#42 & \texttt{0<1 0<3 0<6 1<2 2<4 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#58 & \#96 & \texttt{0<1 0<6 1<2 1<3 2<4 2<5 3<4 4<7 5<7 6<7} & dual of \#96\\
+\#59 & \#54 & \texttt{0<1 0<2 0<3 1<4 1<6 2<4 2<5 3<4 4<7 5<7 6<7} & $\Eq(6)$: $\theta_1=012|3|4|5$, $\theta_2=034|1|2|5$, $\theta_3=0|13|24|5$, $\theta_4=01234|5$, $\theta_5=034|15|2$, $\theta_6=012|3|45$\\
+\#60 & \#114 & \texttt{0<1 0<2 1<3 1<6 2<4 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#61 & \#61 & \texttt{0<1 0<2 0<3 1<5 1<6 2<4 2<5 3<4 4<7 5<7 6<7} & $[H,J_2]$, $H\cong D_{20}$, $|G:H|=30240$\\
+\#62 & \#100 & \texttt{0<1 0<3 1<2 1<6 2<4 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#64 & \#125 & \texttt{0<1 0<6 1<2 2<3 2<5 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#65 & \#152 & \texttt{0<1 0<2 1<3 1<6 2<3 2<5 3<4 4<7 5<7 6<7} & $\Eq(6)$: $\theta_1=01|23|4|5$, $\theta_2=02|1|3|4|5$, $\theta_3=0123|4|5$, $\theta_4=0123|45$, $\theta_5=02|14|35$, $\theta_6=015|234$\\
+\#66 & \#140 & \texttt{0<1 0<2 1<5 1<6 2<3 2<5 3<4 4<7 5<7 6<7} & $\Eq(6)$: $\theta_1=012|34|5$, $\theta_2=05|1|2|3|4$, $\theta_3=05|13|2|4$, $\theta_4=05|13|24$, $\theta_5=0125|34$, $\theta_6=012|345$\\
+\#68 & \#127 & \texttt{0<1 0<3 1<2 2<5 2<6 3<4 4<7 5<7 6<7} & \textbf{open}\\
+\#69 & \#128 & \texttt{0<1 0<3 1<2 1<4 2<5 2<6 3<4 4<7 5<7 6<7} & dual of \#128\\
+\#71 & \#129 & \texttt{0<1 0<3 1<2 2<4 2<5 2<6 3<4 4<7 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=01|23|4$, $\theta_3=02|13|4$, $\theta_4=0123|4$, $\theta_5=014|23$, $\theta_6=01|234$\\
+\#74 & \#74 & \texttt{0<1 0<2 0<6 1<3 2<3 3<4 3<5 4<7 5<7 6<7} & \textbf{open}\\
+\#75 & \#132 & \texttt{0<1 0<6 1<2 2<3 3<4 3<5 4<7 5<7 6<7} & $[H,L_3(7)]$, $H\cong 7{:}6$, $|G:H|=44688$\\
+\#76 & \#142 & \texttt{0<1 0<2 1<4 1<6 2<3 3<4 3<5 4<7 5<7 6<7} & $\Eq(6)$: $\theta_1=012|34|5$, $\theta_2=03|1|2|4|5$, $\theta_3=03|14|2|5$, $\theta_4=01234|5$, $\theta_5=03|14|25$, $\theta_6=012|345$\\
+\#77 & \#158 & \texttt{0<1 0<2 1<3 1<6 2<3 3<4 3<5 4<7 5<7 6<7} & $[H,A_8]$, $H\cong 2\times A_{4}$, $|G:H|=840$\\
+\#84 & \#5 & \texttt{0<1 0<2 0<3 0<4 0<6 1<5 2<5 3<5 4<5 5<7 6<7} & $[H,G]$, $G=\mathrm{SmallGroup}(36,9)$, $H\cong ?$\\
+\#85 & \#14 & \texttt{0<1 0<3 0<4 0<6 1<2 2<5 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#86 & \#33 & \texttt{0<1 0<4 0<6 1<2 1<3 2<5 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#87 & \#87 & \texttt{0<1 0<6 1<2 1<3 1<4 2<5 3<5 4<5 5<7 6<7} & $\Eq(6)$: $\theta_1=012|3|4|5$, $\theta_2=012|34|5$, $\theta_3=012|35|4$, $\theta_4=012|3|45$, $\theta_5=012|345$, $\theta_6=03|14|25$\\
+\#88 & \#15 & \texttt{0<1 0<2 0<3 0<4 1<6 2<5 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#89 & \#16 & \texttt{0<1 0<2 0<3 0<4 1<5 1<6 2<5 3<5 4<5 5<7 6<7} & $\Eq(7)$: $\theta_1=012|345|6$, $\theta_2=03|14|25|6$, $\theta_3=05|13|24|6$, $\theta_4=04|15|23|6$, $\theta_5=012345|6$, $\theta_6=0126|345$\\
+\#90 & \#36 & \texttt{0<1 0<3 0<4 1<2 1<6 2<5 3<5 4<5 5<7 6<7} & $[H,U_3(5){:}2]$, $H\cong 2^2\times S_{3}$, $|G:H|=10500$\\
+\#91 & \#91 & \texttt{0<1 0<4 1<2 1<3 1<6 2<5 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#93 & \#20 & \texttt{0<1 0<2 0<4 0<6 1<3 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#94 & \#43 & \texttt{0<1 0<4 0<6 1<2 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#95 & \#50 & \texttt{0<1 0<2 0<6 1<4 2<3 3<5 4<5 5<7 6<7} & $[H,S_{11}]$, $H\cong 11{:}5$, $|G:H|=725760$\\
+\#96 & \#58 & \texttt{0<1 0<2 0<6 1<3 1<4 2<3 3<5 4<5 5<7 6<7} & $\Eq(6)$: $\theta_1=01|2|3|4|5$, $\theta_2=0|1|23|4|5$, $\theta_3=01|23|4|5$, $\theta_4=01|2|3|45$, $\theta_5=01|23|45$, $\theta_6=024|135$\\
+\#97 & \#97 & \texttt{0<1 0<6 1<2 1<4 2<3 3<5 4<5 5<7 6<7} & $\Eq(8)$: $\theta_1=0123|4|5|6|7$, $\theta_2=0123|45|6|7$, $\theta_3=0123|45|67$, $\theta_4=0123|46|57$, $\theta_5=0123|4567$, $\theta_6=04|15|26|37$\\
+\#98 & \#53 & \texttt{0<1 0<2 0<4 1<6 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#99 & \#55 & \texttt{0<1 0<2 0<4 1<5 1<6 2<3 3<5 4<5 5<7 6<7} & $[H,S_8]$, $H\cong 2^2\times S_{3}$, $|G:H|=1680$\\
+\#100 & \#62 & \texttt{0<1 0<2 0<4 1<3 1<6 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#101 & \#101 & \texttt{0<1 0<4 1<2 1<6 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#102 & \#115 & \texttt{0<1 0<2 1<4 1<6 2<3 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#103 & \#119 & \texttt{0<1 0<2 1<3 1<4 1<6 2<3 3<5 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=02|1|3|4$, $\theta_3=012|3|4$, $\theta_4=01|2|34$, $\theta_5=012|34$, $\theta_6=013|24$\\
+\#105 & \#126 & \texttt{0<1 0<6 1<2 2<3 2<4 3<5 4<5 5<7 6<7} & $[H,A_9]$, $H\cong ?$, $|G:H|=?$\\
+\#107 & \#116 & \texttt{0<1 0<2 1<5 1<6 2<3 2<4 3<5 4<5 5<7 6<7} & $[H,(A_6\times A_6){:}2^2]$, $H\cong S_{5}$, $|G:H|=4320$\\
+\#108 & \#153 & \texttt{0<1 0<2 1<3 1<6 2<3 2<4 3<5 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=02|1|3|4$, $\theta_3=012|3|4$, $\theta_4=02|1|34$, $\theta_5=012|34$, $\theta_6=013|24$\\
+\#110 & \#21 & \texttt{0<1 0<2 0<3 0<4 1<6 2<6 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#111 & \#44 & \texttt{0<1 0<3 0<4 1<2 2<6 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#112 & \#22 & \texttt{0<1 0<2 0<3 0<4 1<5 1<6 2<6 3<5 4<5 5<7 6<7} & $\Eq(6)$: $\theta_1=01|23|4|5$, $\theta_2=02|13|45$, $\theta_3=04|1|2|35$, $\theta_4=0|14|25|3$, $\theta_5=014|235$, $\theta_6=0123|45$\\
+\#113 & \#45 & \texttt{0<1 0<3 0<4 1<2 1<5 2<6 3<5 4<5 5<7 6<7} & $\Eq(6)$: $\theta_1=01|23|4|5$, $\theta_2=0123|4|5$, $\theta_3=04|1|25|3$, $\theta_4=0|14|2|35$, $\theta_5=014|235$, $\theta_6=0123|45$\\
+\#114 & \#60 & \texttt{0<1 0<2 0<4 1<3 1<6 2<6 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#115 & \#102 & \texttt{0<1 0<4 1<2 1<3 2<6 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#116 & \#107 & \texttt{0<1 0<2 1<3 1<4 1<6 2<6 3<5 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=02|1|34$, $\theta_3=013|2|4$, $\theta_4=01|24|3$, $\theta_5=013|24$, $\theta_6=012|34$\\
+\#118 & \#46 & \texttt{0<1 0<3 0<4 1<2 2<5 2<6 3<5 4<5 5<7 6<7} & $[G_1,G]$, $G=\mathrm{TransitiveGroup}(24,519)$, $|G|=192$\\
+\#119 & \#103 & \texttt{0<1 0<4 1<2 1<3 2<5 2<6 3<5 4<5 5<7 6<7} & dual of \#103\\
+\#121 & \#130 & \texttt{0<1 0<4 1<2 2<3 2<6 3<5 4<5 5<7 6<7} & \textbf{open}\\
+\#124 & \#24 & \texttt{0<1 0<2 0<3 0<6 1<4 2<4 3<4 4<5 5<7 6<7} & \textbf{open}\\
+\#125 & \#64 & \texttt{0<1 0<3 0<6 1<2 2<4 3<4 4<5 5<7 6<7} & \textbf{open}\\
+\#126 & \#105 & \texttt{0<1 0<6 1<2 1<3 2<4 3<4 4<5 5<7 6<7} & dual of \#105\\
+\#127 & \#68 & \texttt{0<1 0<2 0<3 1<6 2<4 3<4 4<5 5<7 6<7} & \textbf{open}\\
+\#128 & \#69 & \texttt{0<1 0<2 0<3 1<5 1<6 2<4 3<4 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|23|4$, $\theta_2=02|1|3|4$, $\theta_3=0|13|2|4$, $\theta_4=02|13|4$, $\theta_5=0123|4$, $\theta_6=014|23$\\
+\#129 & \#71 & \texttt{0<1 0<2 0<3 1<4 1<6 2<4 3<4 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=02|1|3|4$, $\theta_3=0|12|3|4$, $\theta_4=012|3|4$, $\theta_5=012|34$, $\theta_6=013|24$\\
+\#130 & \#121 & \texttt{0<1 0<3 1<2 1<6 2<4 3<4 4<5 5<7 6<7} & \textbf{open}\\
+\#132 & \#75 & \texttt{0<1 0<2 0<6 1<3 2<3 3<4 4<5 5<7 6<7} & $[H,A_{11}]$, $H\cong GL(2,3)$, $|G:H|=415800$\\
+\#140 & \#66 & \texttt{0<1 0<2 0<3 1<5 1<6 2<6 3<4 4<5 5<7 6<7} & $[H,U_3(4){:}2]$, $H\cong 2\times A_{4}$, $|G:H|=5200$\\
+\#142 & \#76 & \texttt{0<1 0<2 0<3 1<4 1<6 2<6 3<4 4<5 5<7 6<7} & $\Eq(7)$: $\theta_1=01|2|3|4|5|6$, $\theta_2=023|1|456$, $\theta_3=0|14|25|3|6$, $\theta_4=014|25|3|6$, $\theta_5=014|25|36$, $\theta_6=0123|456$\\
+\#152 & \#65 & \texttt{0<1 0<3 0<4 1<2 2<5 2<6 3<6 4<5 5<7 6<7} & dual of \#65\\
+\#153 & \#108 & \texttt{0<1 0<4 1<2 1<3 2<5 2<6 3<6 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=01|23|4$, $\theta_3=014|2|3$, $\theta_4=02|13|4$, $\theta_5=0123|4$, $\theta_6=014|23$\\
+\#158 & \#77 & \texttt{0<1 0<2 0<4 1<3 2<3 3<5 3<6 4<5 5<7 6<7} & $\Eq(5)$: $\theta_1=01|2|3|4$, $\theta_2=0|1|23|4$, $\theta_3=01|23|4$, $\theta_4=02|13|4$, $\theta_5=0123|4$, $\theta_6=014|23$\\
+\bottomrule
+\end{longtable}
+}
+
+\section{What the searches exclude}\label{sec:neg}
+
+\begin{theorem}\label{thm:neg}
+Let $L$ be one of the $43$ lattices of Theorem~\ref{thm:census} without a known representation.
+Then $L$ is not: the congruence lattice of an algebra with at most $8$ elements
+(except that the $\Eq(8)$ search has so far been run for $\lat{51}$, $\lat{60}$, $\lat{62}$,
+$\lat{91}$, $\lat{100}$--$\lat{102}$, $\lat{114}$, $\lat{115}$, $\lat{121}$, $\lat{130}$; for the
+others the bound is $7$); an interval $[H,G]$ with $H$ core-free in a group of order at most
+$255$; the block lattice of a transitive permutation group of degree at most $47$; an interval in
+the subgroup lattice of a group in the GAP library of tables of marks (up to the unverified cases in
+$\mathrm{He}{:}2$); a core-free interval in $\mathrm{PSL}(2,q)$ or $\mathrm{PGL}(2,q)$, $q\le 37$; or an interval
+$[D_{2d},\mathrm{PSL}(2,2^n)]$ with $d>1$ odd and $n<64$.
+\end{theorem}
+
+The last family is where $\LL$ lives, and it can be handled by hand. For $q=2^n$ and $H=D_{2d}$
+with $d>1$ odd, $d\mid 2^n-\varepsilon$, Dickson's classification of the subgroups of
+$\mathrm{PSL}(2,2^n)$ shows that the proper overgroups of $H$ are exactly one dihedral group
+$D_{2d'}$ for each $d'$ with $d\mid d'\mid 2^n-\varepsilon$, $d'\ne d$, and exactly one subfield
+subgroup $\mathrm{PSL}(2,2^e)$ for each $e\mid n$, $1<e<n$, with $d\mid 2^e\mp 1$ (the count is
+$|N_G(H)|/|N_{\mathrm{PSL}(2,2^e)}(H)|=1$ as $H$ is self-normalising in both), ordered by divisibility
+of $d'$, of $e$, and $D_{2d'}\le\mathrm{PSL}(2,2^e)$ iff $d'\mid 2^e\mp1$. For $n=6$, $d=3$ this is
+$\LL$ (Tian's representation). For $n<64$ the family contains only two eight-element lattices,
+$\lat{96}$ (width two) and $\lat{103}$ ($n=9$, $d=3$, i.e.\ $[S_3,\mathrm{PSL}(2,512)]$; it also has
+a representation in $\Eq(5)$).
+
+Eight of the $43$ open lattices ($\lat4$, $\lat{13}$, $\lat{21}$, $\lat{27}$, $\lat{31}$,
+$\lat{32}$, $\lat{74}$, $\lat{110}$) are simple lattices whose coatoms meet to $0$, so by
+P\'alfy--Pudl\'ak and McKenzie every nonconstant operation of a minimal representation is a
+permutation; if, as for $\LL$ \cite{DeMeoFreese}, the resulting $G$-set can be shown to be
+transitive, the transitive-group search gives a lower bound of $48$ elements for a representation.
+The other $35$ are not simple, and we have no lower bound for them beyond Theorem~\ref{thm:neg}.
+
+The programs that produced the negative results are the same ones that found the $66$
+representations of Table~\ref{tab:wit} in the same runs.
+
+\section{The seven-element lattice $\LL$}\label{sec:L7}
+
+$\LL$ has elements $0,K,J_1,J_2,M_1,M_2,1$ with covers
+$0\prec K\prec 1$, $0\prec J_1\prec M_1\prec 1$, $0\prec J_2\prec M_1$, $J_2\prec M_2\prec 1$.
+The searches of this note were first developed for $\LL$, and the lower bound in
+Theorem~\ref{thm:two}(1) is new.
+
+\begin{proof}[Proof of Theorem~\ref{thm:two}]
+(1) The four intervals were the only hits of the table-of-marks scan for $\LL$ among the $414$
+tables (together with the same intervals in $\mathrm{McL}{:}2$ and $2.\mathrm{Sp}(6,2)$); each was
+verified from explicit generators, and the $\mathrm{PSL}(2,64)$ case follows from Dickson's theorem
+as above. The five overgroups of $7{:}6$ in $\mathrm{Sp}(6,2)$ are $L_3(2){:}2$, $L_2(8){:}3$, $S_7$,
+$U_3(3){:}2$, $S_8$, with $K=L_2(8){:}3$, $J_1=S_7$, $J_2=L_3(2){:}2$, $M_1=S_8$, $M_2=U_3(3){:}2$.
+For the lower bound: $\LL$ is simple and its coatoms meet to $0$, so by DeMeo and Freese
+\cite{DeMeoFreese} a representation of minimal size is a transitive permutation group, whose
+congruence lattice is its lattice of block systems; no transitive group of degree at most $47$ has
+$\LL$ as its lattice of block systems (\texttt{l7trans.g}; independently, the closure search in
+$\Eq(n)$ finds no representation for $n\le 13$).
+(2) \texttt{L61\_in\_J2.g} gives $G=J_2$ on $100$ points and $H=D_{20}$ with
+\texttt{IntermediateSubgroups} returning the six subgroups of Figure~\ref{fig:two} with the stated
+inclusions; the negative statements are the searches of Section~\ref{sec:wit} and the $\Eq(8)$ run.
+\end{proof}
+
+DeMeo and Freese, in their note on Tian's result, give the range $16$ to $34\,560$ for the minimal
+size of a representation of $\LL$; the transitive-group search raises the lower end to $48$.
+
+\section*{Code and data}
+All programs and result files accompany this note: \texttt{lat8.txt} (the $222$ lattices),
+\texttt{gen8.py}, \texttt{reduce3.py} (closure properties), \texttt{latrep.c}, \texttt{verify\_eq.py},
+\texttt{bfverify.c}, \texttt{smallgrp.g}, \texttt{lat8trans.g}, \texttt{tom8.g}, \texttt{tom8\_verify.g},
+\texttt{l2q.g}, \texttt{verify\_groups4.g}, \texttt{witnesses4.json} (one witness per lattice),
+\texttt{props.py} (lattice classes), and the files for $\LL$ and $\lat{61}$ named above.
+
+\section*{Acknowledgments}
+
+Computation carried out with Claude (Anthropic).
+
+\begin{thebibliography}{9}
+\bibitem{DeMeo2012} W.~DeMeo, \emph{Congruence lattices of finite algebras}, Ph.D.\ thesis,
+University of Hawaii at M\=anoa, 2012; arXiv:1204.4305.
+\bibitem{DeMeoFreese} W.~DeMeo, R.~Freese and P.~Jipsen, \emph{Representing finite lattices as congruence
+lattices of finite algebras}, \url{https://github.com/UniversalAlgebra/fin-lat-rep}.
+\bibitem{PP} P.~P.\ P\'alfy and P.~Pudl\'ak, Congruence lattices of finite algebras and intervals
+in subgroup lattices of finite groups, Algebra Universalis 11 (1980), 22--27.
+\bibitem{Snow2000} J.~W.\ Snow, A constructive approach to the finite congruence lattice
+representation problem, Algebra Universalis 43 (2000), 279--293.
+\bibitem{Tian2026} C.~Tian, \emph{The exceptional seven-element lattice as a subgroup interval in
+$\mathrm{PSL}_2(64)$}, preprint, August 2026.
+\bibitem{TomLib} T.~Merkwitz, L.~Naughton and G.~Pfeiffer, \emph{TomLib, the GAP library of tables of marks},
+GAP package, version 1.2.11.
+\bibitem{TransGrp} A.~Hulpke, \emph{TransGrp, transitive groups library}, GAP package, version 3.6.5.
+\end{thebibliography}
+\end{document}

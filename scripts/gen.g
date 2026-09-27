@@ -1,0 +1,42 @@
+Read("g1"); Read("g2");
+A := b11; B := b21;
+G := Group(A, B);
+M := MaximalSubgroupClassReps(G);;
+Emax := First(M, m -> Size(m) = 600);;
+cls := Filtered(ConjugacyClassesSubgroups(Emax), c -> Size(Representative(c)) = 20 and IdGroup(Representative(c)) = [20,4]);;
+H := First(List(cls, Representative), H -> Length(IntermediateSubgroups(G,H).subgroups) = 6);;
+h1 := First(AsList(H), x -> Order(x) = 10);;
+h2 := First(AsList(H), y -> Order(y) = 2 and not y in Group(h1) and Size(Group(h1,y)) = 20);;
+subs := IntermediateSubgroups(G, H).subgroups;;
+sz := function(x) return Size(Group(h1,h2,x)); end;
+pick := function(n) local s; s := First(subs, s -> Size(s) = n); return First(AsList(s), x -> sz(x) = n); end;
+xa := pick(100);; xb := pick(120);; xc := pick(320);; xf := pick(300);;
+code := function(n) return Position([20,100,120,320,1920,600,300,604800], n) - 1; end;
+wordToList := function(w) local e, res, i, j;
+  e := ExtRepOfObj(w); res := [];
+  for i in [1,3..Length(e)-1] do
+    for j in [1..AbsInt(e[i+1])] do Add(res, SignInt(e[i+1]) * e[i]); od;
+  od; return res; end;
+F2 := FreeGroup(2);
+homG := GroupHomomorphismByImages(F2, G, GeneratorsOfGroup(F2), [A,B]);;
+gw := function(x) local w; w := PreImagesRepresentative(homG, x); Assert(0, MappedWord(w, GeneratorsOfGroup(F2), [A,B]) = x); return wordToList(w); end;
+img := function(x) return List(ListPerm(x, 100), i -> i - 1); end;
+out := OutputTextFile("data.txt", false);
+SetPrintFormattingStatus(out, false);
+for x in [A,B,h1,h2,xa,xb,xc,xf] do PrintTo(out, img(x), "\n"); od;
+for x in [h1,h2,xa,xb,xc,xf] do AppendTo(out, gw(x), "\n"); od;
+gensOf := [[],[xa],[xb],[xc],[xb,xc],[xa,xb],[xf],[A,B]];
+F3 := FreeGroup(3);
+dc := DoubleCosetRepsAndSizes(G, H, H);;
+AppendTo(out, Length(dc), "\n");
+for p in dc do
+  r := p[1];
+  K := Group(h1,h2,r);
+  c := code(Size(K));
+  hom := GroupHomomorphismByImages(F3, K, GeneratorsOfGroup(F3), [h1,h2,r]);
+  ws := List(gensOf[c+1], t -> PreImagesRepresentative(hom, t));
+  Assert(0, ForAll([1..Length(ws)], i -> MappedWord(ws[i], GeneratorsOfGroup(F3), [h1,h2,r]) = gensOf[c+1][i]));
+  AppendTo(out, c, ";", JoinStringsWithSeparator(List(img(r), String), ","), ";",
+    JoinStringsWithSeparator(List(ws, w -> JoinStringsWithSeparator(List(wordToList(w), String), ",")), "|"), "\n");
+od;
+CloseStream(out);
